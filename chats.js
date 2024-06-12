@@ -64,11 +64,7 @@ const randomUsernames = [
         }
     });
 
-    disableChatBtn.addEventListener('click', () => {
-        isChatDisabled = !isChatDisabled;
-        localStorage.setItem('chatDisabled', isChatDisabled);
-        toggleChat();
-    });
+
 
     function toggleChat() {
         chatInput.disabled = isChatDisabled;
