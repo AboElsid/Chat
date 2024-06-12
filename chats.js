@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
             ];
 
             let username = localStorage.getItem('username') || getRandomUsername();
-
+            let isChatDisabled = localStorage.getItem('chatDisabled') === 'true';
             if (!username) {
                 username = getRandomUsername();
                 localStorage.setItem('username', username);
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const messagesContainer = document.getElementById('messages');
             const emojiContainer = document.getElementById('emoji-container');
             const chatTitle = document.getElementById('chat-title');
-
+            const disableChatBtn = document.getElementById('disable-chat-btn');
             const profanityList = ["profanity1", "profanity2", "profanity3", "profanity4"];
 
             sendBtn.addEventListener('click', sendMessage);
@@ -62,6 +62,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     sendMessage(); // Call sendMessage function
                 }
             });
+disableChatBtn.addEventListener('click', () => {
+    isChatDisabled = !isChatDisabled;
+    localStorage.setItem('chatDisabled', isChatDisabled);
+    toggleChat();
+});
+
+function toggleChat() {
+    chatInput.disabled = isChatDisabled;
+    sendBtn.disabled = isChatDisabled;
+    disableChatBtn.textContent = isChatDisabled ? 'Enable Chat' : 'Disable Chat';
+}
+
 
             function sendMessage() {
                 const message = chatInput.value.trim(); // Remove extra spaces from the beginning and end
@@ -73,7 +85,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (!isValidMessage(message)) {
                         alert('Please refrain from sharing links or using profanity.');
                         return;
+                
                     }
+                        if (isChatDisabled) {
+        alert('Chat is currently disabled.');
+        return;
                     
                     const messageRef = database.ref('messages').push();
                     messageRef.set({
@@ -114,3 +130,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             });
         });
+
+function toggleChat() {
+    chatInput.disabled = isChatDisabled;
+    sendBtn.disabled = isChatDisabled;
+    disableChatBtn.textContent = isChatDisabled ? 'Enable Chat' : 'Disable Chat';
+}
+
+// Check if chat should be disabled on page load
+toggleChat();
