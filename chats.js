@@ -13,12 +13,13 @@ const firebaseConfig = {
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    const randomUsernames = [
-        "User123", "Anonymous123", "ChatUser456", "RandomUser789", "GuestUser321",
-        "CoolDude007", "AwesomePerson42", "SuperChatter", "NinjaChatMaster", "FriendlyGhost",
-        "MysteryUser", "SmartCookie99", "QuickFox123", "SunshineGirl456", "ElectricBlueDolphinRainbowUnicorn123",
-        // Add more usernames as needed
-    ];
+const randomUsernames = [
+    "User123",
+    "Anonymous123",
+    "ChatUser456",
+    "RandomUser789",
+    "GuestUser321"
+];
 
     let username = localStorage.getItem('username') || getRandomUsername();
     let isChatDisabled = localStorage.getItem('chatDisabled') === 'true';
