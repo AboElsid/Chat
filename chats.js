@@ -1,4 +1,4 @@
-
+    document.addEventListener('DOMContentLoaded', function() {
 const firebaseConfig = {
     apiKey: "AIzaSyDPKhtwMTmAors7T2UuY7dnLFRPq4UZrfs",
     authDomain: "arabflaqiss.firebaseapp.com",
