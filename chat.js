@@ -1,4 +1,4 @@
-<script>
+
 const firebaseConfig = {
     apiKey: "AIzaSyDPKhtwMTmAors7T2UuY7dnLFRPq4UZrfs",
     authDomain: "arabflaqiss.firebaseapp.com",
@@ -122,4 +122,4 @@ function deleteAllMessages() {
 function changeUsername() {
     alert("You are using a random username. To change it, edit the 'randomUsernames' array.");
 }
-</script>
+
