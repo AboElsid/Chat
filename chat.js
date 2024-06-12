@@ -1,3 +1,4 @@
+<script>
 const firebaseConfig = {
     apiKey: "AIzaSyDPKhtwMTmAors7T2UuY7dnLFRPq4UZrfs",
     authDomain: "arabflaqiss.firebaseapp.com",
@@ -87,7 +88,7 @@ function isValidMessage(message) {
     const urlPattern = /(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?/gi;
     const containsURL = urlPattern.test(message);
     const containsProfanity = checkForProfanity(message);
-    return !containsURL & & !containsProfanity;
+    return !containsURL && !containsProfanity;
 }
 
 function checkForProfanity(message) {
@@ -121,4 +122,4 @@ function deleteAllMessages() {
 function changeUsername() {
     alert("You are using a random username. To change it, edit the 'randomUsernames' array.");
 }
-
+</script>
