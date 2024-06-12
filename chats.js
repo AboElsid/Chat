@@ -285,8 +285,8 @@ const randomUsernames = [
     "ElectricEagle",
     "NeonNightingale",
     "QuantumQuail",
-    "HolographicHorse"
-    "VortexViper"
+    "HolographicHorse",
+    "VortexViper",
     ];
 
     let username = localStorage.getItem('username') || getRandomUsername();
