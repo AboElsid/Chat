@@ -87,7 +87,7 @@ function isValidMessage(message) {
     const urlPattern = /(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?/gi;
     const containsURL = urlPattern.test(message);
     const containsProfanity = checkForProfanity(message);
-    return !containsURL &#38;&#38; !containsProfanity;
+    return !containsURL && !containsProfanity;
 }
 
 function checkForProfanity(message) {
