@@ -61,7 +61,7 @@ const randomUsernames = [
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault(); // Prevent default Enter key behavior
             sendMessage(); // Call sendMessage function
-             notificationSound.play(); // تشغيل صوت الإشعار
+
         }
     });
 
@@ -96,6 +96,7 @@ const randomUsernames = [
                 timestamp: Date.now()
             }).then(() => {
                 console.log('Message stored successfully.');
+                   notificationSound.play(); 
             }).catch((error) => {
                 console.error('Error storing message:', error);
             });
