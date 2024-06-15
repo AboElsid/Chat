@@ -61,6 +61,7 @@ const randomUsernames = [
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault(); // Prevent default Enter key behavior
             sendMessage(); // Call sendMessage function
+             notificationSound.play(); // تشغيل صوت الإشعار
         }
     });
 
