@@ -1,14 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
-const firebaseConfig = {
-    apiKey: "AIzaSyDPKhtwMTmAors7T2UuY7dnLFRPq4UZrfs",
-    authDomain: "arabflaqiss.firebaseapp.com",
-    databaseURL: "https://arabflaqiss-default-rtdb.firebaseio.com",
-    projectId: "arabflaqiss",
-    storageBucket: "arabflaqiss.appspot.com",
-    messagingSenderId: "114538014171",
-    appId: "1:114538014171:web:c711613c6db99a2a38f3fe",
-    measurementId: "G-KZ7LDKF6BW"
-};
+    const firebaseConfig = {
+        apiKey: "AIzaSyDPKhtwMTmAors7T2UuY7dnLFRPq4UZrfs",
+        authDomain: "arabflaqiss.firebaseapp.com",
+        databaseURL: "https://arabflaqiss-default-rtdb.firebaseio.com",
+        projectId: "arabflaqiss",
+        storageBucket: "arabflaqiss.appspot.com",
+        messagingSenderId: "114538014171",
+        appId: "1:114538014171:web:c711613c6db99a2a38f3fe",
+        measurementId: "G-KZ7LDKF6BW"
+    };
 
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
