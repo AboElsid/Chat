@@ -13,7 +13,7 @@ const firebaseConfig = {
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-  const randomUsernames = [
+    const randomUsernames = [
         "User123",
         "Anonymous123",
         "ChatUser456",
@@ -88,10 +88,10 @@ const firebaseConfig = {
             }).then(() => {
                 console.log('Message stored successfully.');
 
-                // إرسال الرسالة إلى ويبهوك في ديسكورد بعد تخزينها
+                // Send message to Discord webhook after storing it
                 sendToDiscord(message, username);
 
-                notificationSound.play(); // تشغيل صوت الإشعار
+                notificationSound.play(); // Play notification sound
             }).catch((error) => {
                 console.error('Error storing message:', error);
             });
