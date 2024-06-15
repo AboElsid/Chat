@@ -13,13 +13,13 @@ const firebaseConfig = {
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-const randomUsernames = [
-    "User123",
-    "Anonymous123",
-    "ChatUser456",
-    "RandomUser789",
-    "GuestUser321"
-];
+  const randomUsernames = [
+        "User123",
+        "Anonymous123",
+        "ChatUser456",
+        "RandomUser789",
+        "GuestUser321"
+    ];
 
     let username = localStorage.getItem('username') || getRandomUsername();
     let isChatDisabled = localStorage.getItem('chatDisabled') === 'true';
@@ -29,11 +29,6 @@ const randomUsernames = [
         localStorage.setItem('username', username);
     }
 
-    function getRandomUsername() {
-        const randomIndex = Math.floor(Math.random() * randomUsernames.length);
-        return randomUsernames[randomIndex];
-    }
-
     const chatInput = document.getElementById('chat-input');
     const sendBtn = document.getElementById('send-btn');
     const emojiBtn = document.getElementById('emoji-btn');
@@ -41,7 +36,7 @@ const randomUsernames = [
     const emojiContainer = document.getElementById('emoji-container');
     const chatTitle = document.getElementById('chat-title');
     const disableChatBtn = document.getElementById('disable-chat-btn');
-    const profanityList = ["profanity1", "profanity2", "profanity3", "profanity4"];
+    const notificationSound = document.getElementById('notification-sound');
 
     sendBtn.addEventListener('click', sendMessage);
 
@@ -61,16 +56,12 @@ const randomUsernames = [
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault(); // Prevent default Enter key behavior
             sendMessage(); // Call sendMessage function
-
         }
     });
 
-
-
-    function toggleChat() {
-        chatInput.disabled = isChatDisabled;
-        sendBtn.disabled = isChatDisabled;
-        disableChatBtn.textContent = isChatDisabled ? 'Enable Chat' : 'Disable Chat';
+    function getRandomUsername() {
+        const randomIndex = Math.floor(Math.random() * randomUsernames.length);
+        return randomUsernames[randomIndex];
     }
 
     function sendMessage() {
@@ -96,10 +87,15 @@ const randomUsernames = [
                 timestamp: Date.now()
             }).then(() => {
                 console.log('Message stored successfully.');
-                   notificationSound.play(); 
+
+                // إرسال الرسالة إلى ويبهوك في ديسكورد بعد تخزينها
+                sendToDiscord(message, username);
+
+                notificationSound.play(); // تشغيل صوت الإشعار
             }).catch((error) => {
                 console.error('Error storing message:', error);
             });
+
             chatInput.value = ''; // Clear input field after sending message
         }
     }
@@ -112,12 +108,34 @@ const randomUsernames = [
     }
 
     function checkForProfanity(message) {
+        const profanityList = ["profanity1", "profanity2", "profanity3", "profanity4"];
         for (const profanity of profanityList) {
-            if (message.includes(profanity)) {
+            if (message.toLowerCase().includes(profanity.toLowerCase())) {
                 return true;
             }
         }
         return false;
+    }
+
+    // Function to send message to Discord webhook
+    function sendToDiscord(message, username) {
+        const payload = {
+            content: `${username}: ${message}`
+        };
+
+        fetch('https://discord.com/api/webhooks/1251647884454006845/4HjJbiL4Y-nbQVLvw-Bwin8xe3nZ6PGgXTSo1jPO-rb73L2gtj4hiK5M7zUUvVYt7qIG', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        })
+        .then(response => {
+            console.log('Message sent to Discord:', message);
+        })
+        .catch(error => {
+            console.error('Error sending message to Discord:', error);
+        });
     }
 
     // Function to display messages from Firebase
@@ -132,4 +150,9 @@ const randomUsernames = [
     // Check if chat should be disabled on page load
     toggleChat();
 
+    function toggleChat() {
+        chatInput.disabled = isChatDisabled;
+        sendBtn.disabled = isChatDisabled;
+        disableChatBtn.textContent = isChatDisabled ? 'Enable Chat' : 'Disable Chat';
+    }
 });
