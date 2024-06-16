@@ -155,3 +155,4 @@ function toggleChat() {
     sendBtn.disabled = isChatDisabled;
     disableChatBtn.textContent = isChatDisabled ? 'Enable Chat' : 'Disable Chat';
 }
+});
