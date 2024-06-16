@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
         measurementId: "G-KZ7LDKF6BW"
     };
 
-    firebase.initializeApp(firebaseConfig);
+     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
     const randomUsernames = [
@@ -51,11 +51,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Listen for Enter key press in chat input
     chatInput.addEventListener('keydown', function(event) {
         if (event.key === 'Enter' && !event.shiftKey) {
-            event.preventDefault(); // Prevent default Enter key behavior
-            sendMessage(); // Call sendMessage function
+            event.preventDefault();
+            sendMessage();
         }
     });
 
@@ -65,9 +64,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function sendMessage() {
-        const message = chatInput.value.trim(); // Remove extra spaces from the beginning and end
+        const message = chatInput.value.trim();
         if (message) {
-            if (message.length > 40) { // Check if the message exceeds 40 characters
+            if (message.length > 40) {
                 alert('Please limit your message to 40 characters.');
                 return;
             }
@@ -79,7 +78,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Chat is currently disabled.');
                 return;
             }
-            
+
+            if (message.toLowerCase().includes('discordme')) { // Check for key word
+                sendToDiscord(message, username);
+            }
+
             const messageRef = database.ref('messages').push();
             messageRef.set({
                 text: message,
@@ -87,16 +90,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 timestamp: Date.now()
             }).then(() => {
                 console.log('Message stored successfully.');
-
-                // Send message to Discord webhook after storing it
-                sendToDiscord(message, username);
-
-                notificationSound.play(); // Play notification sound
+                notificationSound.play();
             }).catch((error) => {
                 console.error('Error storing message:', error);
             });
 
-            chatInput.value = ''; // Clear input field after sending message
+            chatInput.value = '';
         }
     }
 
@@ -117,7 +116,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return false;
     }
 
-    // Function to send message to Discord webhook
     function sendToDiscord(message, username) {
         const payload = {
             content: `${username}: ${message}`
@@ -138,7 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Function to display messages from Firebase
     database.ref('messages').on('child_added', function(snapshot) {
         const messageData = snapshot.val();
         const messageElement = document.createElement('div');
@@ -147,7 +144,6 @@ document.addEventListener('DOMContentLoaded', function() {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     });
 
-    // Check if chat should be disabled on page load
     toggleChat();
 
     function toggleChat() {
