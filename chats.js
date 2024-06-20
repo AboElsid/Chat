@@ -1,9 +1,6 @@
    <audio id="notification-sound" src="https://assets.mixkit.co/active_storage/sfx/2573/2573.wav" preload="auto"></audio>
 
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
 
-    <script>
         document.addEventListener('DOMContentLoaded', function() {
             const firebaseConfig = {
                 apiKey: "AIzaSyDPKhtwMTmAors7T2UuY7dnLFRPq4UZrfs",
@@ -136,4 +133,3 @@
                 chatInput.disabled = true;
             }
         });
-    </script>
