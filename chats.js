@@ -6,8 +6,7 @@ databaseURL: "https://arabflaqiss-default-rtdb.firebaseio.com",
 projectId: "arabflaqiss",
 storageBucket: "arabflaqiss.appspot.com",
 messagingSenderId: "114538014171",
-appId: "1:114538014171:web
-",
+appId: "1:114538014171:web",
 measurementId: "G-KZ7LDKF6BW"
 };
 
