@@ -149,24 +149,22 @@ measurementId: "G-KZ7LDKF6BW"
     // Check if chat should be disabled on page load
     toggleChat();
 
-    // Listen for registration form submission
+     // Listen for registration form submission
     document.getElementById('registration-form').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent default form submission
 
         const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
 
         // Send data to Firebase
         const registrationRef = database.ref('registrations').push();
         registrationRef.set({
             name: name,
-            email: email,
             timestamp: Date.now()
         }).then(() => {
             console.log('Registration data stored successfully.');
 
             // Send registration data to Discord webhook
-            sendRegistrationToDiscord(name, email);
+            sendRegistrationToDiscord(name);
 
             // Optionally, you can add further actions after successful registration
         }).catch((error) => {
@@ -175,13 +173,12 @@ measurementId: "G-KZ7LDKF6BW"
 
         // Clear input fields after registration
         document.getElementById('name').value = '';
-        document.getElementById('email').value = '';
     });
 
     // Function to send registration data to Discord webhook
-    function sendRegistrationToDiscord(name, email) {
+    function sendRegistrationToDiscord(name) {
         const payload = {
-            content: `New registration:\nName: ${name}\nEmail: ${email}`
+            content: `New registration:\nName: ${name}`
         };
 
         fetch('https://discord.com/api/webhooks/1253414413478662185/BtMBq4-gWdkSqlrMvh7RHd6hL0qBMJFu0QD4cLbqDJC7k8HV-aMubpAjUhhrAf670ifp', {
