@@ -1,13 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const firebaseConfig = {
-        apiKey: "AIzaSyDPKhtwMTmAors7T2UuY7dnLFRPq4UZrfs",
-        authDomain: "arabflaqiss.firebaseapp.com",
-        databaseURL: "https://arabflaqiss-default-rtdb.firebaseio.com",
-        projectId: "arabflaqiss",
-        storageBucket: "arabflaqiss.appspot.com",
-        messagingSenderId: "114538014171",
-        appId: "1:114538014171:web",
-        measurementId: "G-KZ7LDKF6BW"
+        // تكوين Firebase هنا
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -19,6 +12,15 @@ document.addEventListener('DOMContentLoaded', function() {
         "ChatUser456",
         "RandomUser789",
         "GuestUser321"
+    ];
+
+    // قائمة الأسماء الممنوعة
+    const forbiddenUsernames = [
+        "Admin",
+        "Moderator",
+        "BlockedUser",
+        "InappropriateName",
+        "NewForbiddenUsername"
     ];
 
     let username = localStorage.getItem('username') || getRandomUsername();
@@ -57,14 +59,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Listen for Enter key press in chat input
     chatInput.addEventListener('keydown', function(event) {
         if (event.key === 'Enter' && !event.shiftKey) {
-            event.preventDefault(); // Prevent default Enter key behavior
-            sendMessage(); // Call sendMessage function
+            event.preventDefault(); // منع السلوك الافتراضي لمفتاح Enter
+            sendMessage(); // استدعاء دالة sendMessage
         }
     });
 
     setUsernameBtn.addEventListener('click', function() {
         const enteredUsername = usernameInput.value.trim();
         if (enteredUsername) {
+            if (!isUsernameAllowed(enteredUsername)) {
+                alert('This username is not allowed.');
+                return;
+            }
             username = enteredUsername;
             localStorage.setItem('username', username);
             usernameContainer.style.display = 'none';
@@ -89,9 +95,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function sendMessage() {
-        const message = chatInput.value.trim(); // Remove extra spaces from the beginning and end
+        const message = chatInput.value.trim(); // إزالة المسافات الزائدة من البداية والنهاية
         if (message) {
-            if (message.length > 40) { // Check if the message exceeds 40 characters
+            if (message.length > 40) { // التحقق مما إذا كانت الرسالة تتجاوز 40 حرفًا
                 alert('Please limit your message to 40 characters.');
                 return;
             }
@@ -112,15 +118,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }).then(() => {
                 console.log('Message stored successfully.');
 
-                // Send message to Discord webhook after storing it
+                // إرسال الرسالة إلى ويب هوك Discord بعد تخزينها
                 sendToDiscord(message, username);
 
-                notificationSound.play(); // Play notification sound
+                notificationSound.play(); // تشغيل صوت الإشعار
             }).catch((error) => {
                 console.error('Error storing message:', error);
             });
 
-            chatInput.value = ''; // Clear input field after sending message
+            chatInput.value = ''; // مسح حقل الإدخال بعد إرسال الرسالة
         }
     }
 
@@ -141,7 +147,11 @@ document.addEventListener('DOMContentLoaded', function() {
         return false;
     }
 
-    // Function to send message to Discord webhook
+    function isUsernameAllowed(username) {
+        return !forbiddenUsernames.includes(username);
+    }
+
+    // إرسال الرسالة إلى ويب هوك Discord
     function sendToDiscord(message, username) {
         const payload = {
             content: `${username}: ${message}`
@@ -160,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Function to display messages from Firebase
+    // عرض الرسائل من Firebase
     database.ref('messages').on('child_added', function(snapshot) {
         const messageData = snapshot.val();
         const messageElement = document.createElement('div');
@@ -169,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     });
 
-    // Check if chat should be disabled on page load
+    // التحقق من حالة تعطيل الدردشة عند تحميل الصفحة
     toggleChat();
 
     function toggleChat() {
