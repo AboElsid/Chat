@@ -1,16 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
-const firebaseConfig = {
-apiKey: "AIzaSyDPKhtwMTmAors7T2UuY7dnLFRPq4UZrfs",
-authDomain: "arabflaqiss.firebaseapp.com",
-databaseURL: "https://arabflaqiss-default-rtdb.firebaseio.com",
-projectId: "arabflaqiss",
-storageBucket: "arabflaqiss.appspot.com",
-messagingSenderId: "114538014171",
-appId: "1:114538014171:web",
-measurementId: "G-KZ7LDKF6BW"
-};
+    const firebaseConfig = {
+        apiKey: "AIzaSyDPKhtwMTmAors7T2UuY7dnLFRPq4UZrfs",
+        authDomain: "arabflaqiss.firebaseapp.com",
+        databaseURL: "https://arabflaqiss-default-rtdb.firebaseio.com",
+        projectId: "arabflaqiss",
+        storageBucket: "arabflaqiss.appspot.com",
+        messagingSenderId: "114538014171",
+        appId: "1:114538014171:web",
+        measurementId: "G-KZ7LDKF6BW"
+    };
 
-   firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
     const randomUsernames = [
@@ -21,13 +21,8 @@ measurementId: "G-KZ7LDKF6BW"
         "GuestUser321"
     ];
 
-    let username = localStorage.getItem('username') || getRandomUsername();
+    let username = localStorage.getItem('username') || '';
     let isChatDisabled = localStorage.getItem('chatDisabled') === 'true';
-
-    if (!username) {
-        username = getRandomUsername();
-        localStorage.setItem('username', username);
-    }
 
     const chatInput = document.getElementById('chat-input');
     const sendBtn = document.getElementById('send-btn');
@@ -37,6 +32,27 @@ measurementId: "G-KZ7LDKF6BW"
     const chatTitle = document.getElementById('chat-title');
     const disableChatBtn = document.getElementById('disable-chat-btn');
     const notificationSound = document.getElementById('notification-sound');
+    const usernameContainer = document.getElementById('username-container');
+    const messageContainer = document.getElementById('message-container');
+    const setUsernameBtn = document.getElementById('set-username-btn');
+    const usernameInput = document.getElementById('username-input');
+
+    if (username) {
+        usernameContainer.style.display = 'none';
+        messageContainer.style.display = 'flex';
+    }
+
+    setUsernameBtn.addEventListener('click', function() {
+        const usernameValue = usernameInput.value.trim();
+        if (usernameValue) {
+            username = usernameValue;
+            localStorage.setItem('username', username);
+            usernameContainer.style.display = 'none';
+            messageContainer.style.display = 'flex';
+        } else {
+            alert('Please enter a username.');
+        }
+    });
 
     sendBtn.addEventListener('click', sendMessage);
 
@@ -51,11 +67,10 @@ measurementId: "G-KZ7LDKF6BW"
         });
     });
 
-    // Listen for Enter key press in chat input
     chatInput.addEventListener('keydown', function(event) {
         if (event.key === 'Enter' && !event.shiftKey) {
-            event.preventDefault(); // Prevent default Enter key behavior
-            sendMessage(); // Call sendMessage function
+            event.preventDefault();
+            sendMessage();
         }
     });
 
@@ -65,9 +80,9 @@ measurementId: "G-KZ7LDKF6BW"
     }
 
     function sendMessage() {
-        const message = chatInput.value.trim(); // Remove extra spaces from the beginning and end
+        const message = chatInput.value.trim();
         if (message) {
-            if (message.length > 40) { // Check if the message exceeds 40 characters
+            if (message.length > 40) {
                 alert('Please limit your message to 40 characters.');
                 return;
             }
@@ -87,16 +102,13 @@ measurementId: "G-KZ7LDKF6BW"
                 timestamp: Date.now()
             }).then(() => {
                 console.log('Message stored successfully.');
-
-                // Send message to Discord webhook after storing it
                 sendToDiscord(message, username);
-
-                notificationSound.play(); // Play notification sound
+                notificationSound.play();
             }).catch((error) => {
                 console.error('Error storing message:', error);
             });
 
-            chatInput.value = ''; // Clear input field after sending message
+            chatInput.value = '';
         }
     }
 
@@ -117,7 +129,6 @@ measurementId: "G-KZ7LDKF6BW"
         return false;
     }
 
-    // Function to send message to Discord webhook
     function sendToDiscord(message, username) {
         const payload = {
             content: `${username}: ${message}`
@@ -136,7 +147,6 @@ measurementId: "G-KZ7LDKF6BW"
         });
     }
 
-    // Function to display messages from Firebase
     database.ref('messages').on('child_added', function(snapshot) {
         const messageData = snapshot.val();
         const messageElement = document.createElement('div');
@@ -145,7 +155,6 @@ measurementId: "G-KZ7LDKF6BW"
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     });
 
-    // Check if chat should be disabled on page load
     toggleChat();
 
     function toggleChat() {
