@@ -81,8 +81,6 @@ alert('Chat is currently disabled.');
 return;
 }
 
-javascript
-نسخ الكود
     const messageRef = database.ref('messages').push();
     messageRef.set({
         text: message,
@@ -126,8 +124,7 @@ const payload = {
 content: ${username}: ${message}
 };
 
-javascript
-نسخ الكود
+
 fetch('https://discord.com/api/webhooks/1251647884454006845/4HjJbiL4Y-nbQVLvw-Bwin8xe3nZ6PGgXTSo1jPO-rb73L2gtj4hiK5M7zUUvVYt7qIG', {
     method: 'POST',
     headers: {
@@ -154,6 +151,54 @@ messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
 // Check if chat should be disabled on page load
 toggleChat();
+
+// Listen for registration form submission
+document.getElementById('registration-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+
+    // Send data to Firebase
+    const registrationRef = database.ref('registrations').push();
+    registrationRef.set({
+        name: name,
+        email: email,
+        timestamp: Date.now()
+    }).then(() => {
+        console.log('Registration data stored successfully.');
+
+        // Send registration data to Discord webhook
+        sendRegistrationToDiscord(name, email);
+
+        // Optionally, you can add further actions after successful registration
+    }).catch((error) => {
+        console.error('Error storing registration data:', error);
+    });
+
+    // Clear input fields after registration
+    document.getElementById('name').value = '';
+    document.getElementById('email').value = '';
+});
+
+// Function to send registration data to Discord webhook
+function sendRegistrationToDiscord(name, email) {
+    const payload = {
+        content: `New registration:\nName: ${name}\nEmail: ${email}`
+    };
+
+    fetch('https://discord.com/api/webhooks/1253414413478662185/BtMBq4-gWdkSqlrMvh7RHd6hL0qBMJFu0QD4cLbqDJC7k8HV-aMubpAjUhhrAf670ifp', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+    }).then(response => {
+        console.log('Registration data sent to Discord:', payload.content);
+    }).catch(error => {
+        console.error('Error sending registration data to Discord:', error);
+    });
+}
 
 function toggleChat() {
 chatInput.disabled = isChatDisabled;
