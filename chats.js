@@ -13,6 +13,7 @@ measurementId: "G-KZ7LDKF6BW"
 
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
+    const notificationSound = new Audio('https://cdn.pixabay.com/audio/2024/05/19/audio_48ac856676.mp3'); // رابط الصوت الخارجي
 
     const randomUsernames = [
         "User123",
