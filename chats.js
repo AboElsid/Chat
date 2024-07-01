@@ -13,7 +13,7 @@ measurementId: "G-KZ7LDKF6BW"
 
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-    const notificationSound = new Audio('https://cdn.pixabay.com/audio/2024/05/19/audio_48ac856676.mp3'); // رابط الصوت الخارجي
+
 
     const randomUsernames = [
         "User123",
@@ -66,7 +66,6 @@ measurementId: "G-KZ7LDKF6BW"
     const emojiContainer = document.getElementById('emoji-container');
     const chatTitle = document.getElementById('chat-title');
     const disableChatBtn = document.getElementById('disable-chat-btn');
-    const notificationSound = document.getElementById('notification-sound');
     const usernameInput = document.getElementById('username-input');
     const setUsernameBtn = document.getElementById('set-username-btn');
     const usernameContainer = document.getElementById('username-container');
@@ -137,7 +136,7 @@ measurementId: "G-KZ7LDKF6BW"
                 alert('Chat is currently disabled.');
                 return;
             }
-
+    const notificationSound = new Audio('https://cdn.pixabay.com/audio/2024/05/19/audio_48ac856676.mp3'); // رابط الصوت الخارجي
             const messageRef = database.ref('messages').push();
             messageRef.set({
                 text: message,
