@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function() {
     const firebaseConfig = {
         apiKey: "AIzaSyDPKhtwMTmAors7T2UuY7dnLFRPq4UZrfs",
@@ -66,12 +67,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const disableChatBtn = document.getElementById('disable-chat-btn');
     const usernameInput = document.getElementById('username-input');
     const passwordInput = document.getElementById('password-input');
+    const confirmBtn = document.getElementById('confirm-password-btn');
     const setUsernameBtn = document.getElementById('set-username-btn');
     const usernameContainer = document.getElementById('username-container');
     const adminControlsContainer = document.getElementById('admin-controls-container');
     const passwordContainer = document.getElementById('password-container');
 
     sendBtn.addEventListener('click', sendMessage);
+
+    confirmBtn.addEventListener('click', function() {
+        const enteredPassword = passwordInput.value.trim();
+        if (enteredPassword === adminPassword) {
+            adminControlsContainer.style.display = 'block';
+            passwordContainer.style.display = 'none'; // Hide password input
+        } else {
+            alert('Incorrect password.');
+        }
+    });
 
     emojiBtn.addEventListener('click', () => {
         emojiContainer.style.display = emojiContainer.style.display === 'flex' ? 'none' : 'flex';
@@ -93,21 +105,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     setUsernameBtn.addEventListener('click', function() {
         const enteredUsername = usernameInput.value.trim();
-        const enteredPassword = passwordInput.value.trim();
         if (enteredUsername) {
             if (!isUsernameAllowed(enteredUsername)) {
                 alert('This username is not allowed.');
                 return;
             }
-            if (enteredUsername === '👑 ArabFlaqis 👑' && enteredPassword === adminPassword) {
-                adminControlsContainer.style.display = 'block';
-                passwordContainer.style.display = 'none'; // Hide password input
+            if (enteredUsername === '👑 ArabFlaqis 👑') {
+                passwordContainer.style.display = 'block'; // Show password input
+            } else {
+                username = enteredUsername;
+                localStorage.setItem('username', username);
+                usernameContainer.style.display = 'none';
+                chatInput.style.display = 'block';
+                sendBtn.style.display = 'block';
             }
-            username = enteredUsername;
-            localStorage.setItem('username', username);
-            usernameContainer.style.display = 'none';
-            chatInput.style.display = 'block';
-            sendBtn.style.display = 'block';
         }
     });
 
@@ -213,10 +224,6 @@ document.addEventListener('DOMContentLoaded', function() {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     });
 
-
-
-
-  
     toggleChat();
 
     function toggleChat() {
