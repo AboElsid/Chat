@@ -1,19 +1,17 @@
 document.addEventListener('DOMContentLoaded', function() {
-const firebaseConfig = {
-apiKey: "AIzaSyDPKhtwMTmAors7T2UuY7dnLFRPq4UZrfs",
-authDomain: "arabflaqiss.firebaseapp.com",
-databaseURL: "https://arabflaqiss-default-rtdb.firebaseio.com",
-projectId: "arabflaqiss",
-storageBucket: "arabflaqiss.appspot.com",
-messagingSenderId: "114538014171",
-appId: "1:114538014171:web",
-measurementId: "G-KZ7LDKF6BW"
-};
-
+    const firebaseConfig = {
+        apiKey: "AIzaSyDPKhtwMTmAors7T2UuY7dnLFRPq4UZrfs",
+        authDomain: "arabflaqiss.firebaseapp.com",
+        databaseURL: "https://arabflaqiss-default-rtdb.firebaseio.com",
+        projectId: "arabflaqiss",
+        storageBucket: "arabflaqiss.appspot.com",
+        messagingSenderId: "114538014171",
+        appId: "1:114538014171:web",
+        measurementId: "G-KZ7LDKF6BW"
+    };
 
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-
 
     const randomUsernames = [
         "User123",
@@ -23,13 +21,12 @@ measurementId: "G-KZ7LDKF6BW"
         "GuestUser321"
     ];
 
-    // قائمة الأسماء الممنوعة
     const forbiddenUsernames = [
         "Admin",
         "Moderator",
         "BlockedUser",
-                "ArabFlaqis",
-                "Arab-Flaqis",
+        "ArabFlaqis",
+        "Arab-Flaqis",
         "xnxx",
         "fuck",
         "sex",
@@ -83,11 +80,10 @@ measurementId: "G-KZ7LDKF6BW"
         });
     });
 
-    // Listen for Enter key press in chat input
     chatInput.addEventListener('keydown', function(event) {
         if (event.key === 'Enter' && !event.shiftKey) {
-            event.preventDefault(); // منع السلوك الافتراضي لمفتاح Enter
-            sendMessage(); // استدعاء دالة sendMessage
+            event.preventDefault();
+            sendMessage();
         }
     });
 
@@ -122,9 +118,9 @@ measurementId: "G-KZ7LDKF6BW"
     }
 
     function sendMessage() {
-        const message = chatInput.value.trim(); // إزالة المسافات الزائدة من البداية والنهاية
+        const message = chatInput.value.trim();
         if (message) {
-            if (message.length > 40) { // التحقق مما إذا كانت الرسالة تتجاوز 40 حرفًا
+            if (message.length > 40) {
                 alert('Please limit your message to 40 characters.');
                 return;
             }
@@ -136,7 +132,7 @@ measurementId: "G-KZ7LDKF6BW"
                 alert('Chat is currently disabled.');
                 return;
             }
-    const notificationSound = new Audio('https://cdn.pixabay.com/audio/2024/05/19/audio_48ac856676.mp3'); // رابط الصوت الخارجي
+            const notificationSound = new Audio('https://cdn.pixabay.com/audio/2024/05/19/audio_48ac856676.mp3');
             const messageRef = database.ref('messages').push();
             messageRef.set({
                 text: message,
@@ -144,16 +140,13 @@ measurementId: "G-KZ7LDKF6BW"
                 timestamp: Date.now()
             }).then(() => {
                 console.log('Message stored successfully.');
-
-                // إرسال الرسالة إلى ويب هوك Discord بعد تخزينها
                 sendToDiscord(message, username);
-
-                notificationSound.play(); // تشغيل صوت الإشعار
+                notificationSound.play();
             }).catch((error) => {
                 console.error('Error storing message:', error);
             });
 
-            chatInput.value = ''; // مسح حقل الإدخال بعد إرسال الرسالة
+            chatInput.value = '';
         }
     }
 
@@ -178,7 +171,6 @@ measurementId: "G-KZ7LDKF6BW"
         return !forbiddenUsernames.includes(username);
     }
 
-    // إرسال الرسالة إلى ويب هوك Discord
     function sendToDiscord(message, username) {
         const payload = {
             content: `${username}: ${message}`
@@ -197,16 +189,15 @@ measurementId: "G-KZ7LDKF6BW"
         });
     }
 
-    // عرض الرسائل من Firebase
     database.ref('messages').on('child_added', function(snapshot) {
         const messageData = snapshot.val();
         const messageElement = document.createElement('div');
         messageElement.textContent = `${messageData.username}: ${messageData.text}`;
+        messageElement.classList.add(messageData.username === username ? 'my-message' : 'other-message');
         messagesContainer.appendChild(messageElement);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     });
 
-    // التحقق من حالة تعطيل الدردشة عند تحميل الصفحة
     toggleChat();
 
     function toggleChat() {
