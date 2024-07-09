@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let username = localStorage.getItem('username') || getRandomUsername();
     let isChatDisabled = localStorage.getItem('chatDisabled') === 'true';
+    const adminPassword = '2001259';
 
     if (!username) {
         username = getRandomUsername();
@@ -64,8 +65,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatTitle = document.getElementById('chat-title');
     const disableChatBtn = document.getElementById('disable-chat-btn');
     const usernameInput = document.getElementById('username-input');
+    const passwordInput = document.getElementById('password-input');
     const setUsernameBtn = document.getElementById('set-username-btn');
     const usernameContainer = document.getElementById('username-container');
+    const adminControlsContainer = document.getElementById('admin-controls-container');
 
     sendBtn.addEventListener('click', sendMessage);
 
@@ -89,10 +92,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     setUsernameBtn.addEventListener('click', function() {
         const enteredUsername = usernameInput.value.trim();
+        const enteredPassword = passwordInput.value.trim();
         if (enteredUsername) {
             if (!isUsernameAllowed(enteredUsername)) {
                 alert('This username is not allowed.');
                 return;
+            }
+            if (enteredUsername === '👑 ArabFlaqis 👑' && enteredPassword === adminPassword) {
+                adminControlsContainer.style.display = 'block';
             }
             username = enteredUsername;
             localStorage.setItem('username', username);
@@ -145,7 +152,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }).catch((error) => {
                 console.error('Error storing message:', error);
             });
-
             chatInput.value = '';
         }
     }
@@ -193,7 +199,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const messageData = snapshot.val();
         const messageElement = document.createElement('div');
         messageElement.textContent = `${messageData.username}: ${messageData.text}`;
-        messageElement.classList.add(messageData.username === username ? 'my-message' : 'other-message');
+        if (messageData.username === username) {
+            messageElement.classList.add('my-message');
+        } else {
+            messageElement.classList.add('other-message');
+        }
         messagesContainer.appendChild(messageElement);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     });
