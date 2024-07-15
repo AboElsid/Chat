@@ -1201,3 +1201,273 @@ function unmuteUser(username) {
 });
 
 
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Check if current page is not the homepage
+    if (!isHomepage()) {
+        const modal = document.getElementById('myModal');
+        const showMoreBtn = document.getElementById('show-more-btn');
+        const labelsContainer = document.getElementById('labels-container');
+        const moreLabelsContainer = document.getElementById('more-labels-container');
+
+        // إخفاء النافذة المنبثقة بشكل افتراضي عند تحميل الصفحة
+        modal.style.display = 'none';
+
+        fetchLabels();
+
+        function fetchLabels() {
+            const metaElement = document.querySelector('meta[name="data-post-id"]');
+            const postId = metaElement ? metaElement.getAttribute('content') : null;
+
+            if (!postId) {
+                console.error('Post ID not found!');
+                return;
+            }
+
+            const apiKey = "AIzaSyCehP1YKVxibHxy0Qmtzvemc6Xcnhrf4M8";
+            const blogId = "7359325443656174006";
+            const apiUrl = `https://www.googleapis.com/blogger/v3/blogs/${blogId}/posts/${postId}?key=${apiKey}`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.labels) {
+                        displayLabels(data.labels);
+                    }
+                })
+                .catch(error => console.error('Error fetching labels:', error));
+        }
+
+        function displayLabels(labels) {
+            labels.forEach((label, index) => {
+                const labelSpan = createLabelSpan(label);
+                if (index < 4) {
+                    labelsContainer.appendChild(labelSpan);
+                } else {
+                    moreLabelsContainer.appendChild(labelSpan);
+                }
+            });
+
+            if (labels.length > 4) {
+                showMoreBtn.style.display = 'inline-block';
+            }
+        }
+
+        showMoreBtn.addEventListener('click', function () {
+            // إظهار النافذة المنبثقة عند النقر على الزر فقط
+            modal.style.display = 'flex';
+        });
+
+        const span = document.getElementsByClassName('close')[0];
+        span.onclick = closeModal;
+
+        function closeModal() {
+            // إخفاء النافذة عند النقر على زر الإغلاق
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            // إخفاء النافذة عند النقر خارجها
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function createLabelSpan(label) {
+            const labelSpan = document.createElement('a');
+            labelSpan.className = 'label-tag';
+            labelSpan.textContent = label;
+            labelSpan.href = `/search/label/${label}`;
+            labelSpan.target = "_blank";
+            return labelSpan;
+        }
+    }
+
+    function isHomepage() {
+        // يمكنك تعديل هذا الشرط وفقًا لكيفية التعرف على الصفحة الرئيسية في موقعك
+        // على سبيل المثال، يمكنك التحقق من العنوان النسبي للصفحة
+        return window.location.pathname === '/';
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    window.updateElements = function(linksToUpdate, screenshots, elementsToUpdate, images, videoSrc) {
+        // تحديث الروابط بناءً على البيانات السابقة
+        linksToUpdate.forEach(link => {
+            const element = document.getElementById(link.id);
+            if (element) {
+                element.href = link.newUrl;
+            } else {
+                console.error(`Element with ID '${link.id}' not found.`);
+            }
+        });
+      
+        // تحديث لقطات الشاشة بناءً على البيانات السابقة
+        screenshots.forEach(screenshot => {
+            const element = document.getElementById(screenshot.id);
+            if (element) {
+                element.src = screenshot.src;
+            } else {
+                console.error(`Element with ID '${screenshot.id}' not found.`);
+            }
+        });
+
+        // تحديث العناصر في الصفحة بناءً على البيانات السابقة
+        elementsToUpdate.forEach(item => {
+            if (item.class) {
+                const elements = document.getElementsByClassName(item.class);
+                Array.from(elements).forEach((element, index) => {
+                    element.innerHTML = item.content;
+                });
+            } else if (item.id) {
+                const element = document.getElementById(item.id);
+                if (element) {
+                    element.innerHTML = item.content;
+                } else {
+                    console.error(`Element with ID '${item.id}' not found.`);
+                }
+            }
+        });
+      
+        // تحديث الصور بناءً على البيانات السابقة
+        images.forEach(image => {
+            const imgElement = document.getElementById(image.id);
+            if (imgElement) {
+                imgElement.src = image.src;
+            } else {
+                console.error(`Element with ID '${image.id}' not found.`);
+            }
+        });
+
+        // تعيين مصدر الفيديو
+        const videoId = "steamVideo";
+        const videoElement = document.getElementById(videoId);
+        if (videoElement && videoSrc) {
+            videoElement.src = videoSrc;
+        } else {
+            console.error(`Element with ID '${videoId}' not found or videoSrc is not provided.`);
+        }
+    }
+});
+
+  // احفظ المحتوى قبل ترك الصفحة
+    window.addEventListener('beforeunload', function() {
+        var blogContent = document.querySelector('.blog-content'); // اختر المحتوى الخاص بالمدونة هنا
+        if (blogContent) {
+            localStorage.setItem('savedBlog', blogContent.innerHTML);
+        }
+    });
+
+    // استرجع المحتوى المحفوظ عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+        var savedBlog = localStorage.getItem('savedBlog');
+        if (savedBlog) {
+            var blogContent = document.querySelector('.blog-content'); // اختر نفس العنصر الذي يتم اختياره عند التحميل
+            if (blogContent) {
+                blogContent.innerHTML = savedBlog;
+            }
+        }
+    });
+
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    // حفظ الصور في التخزين المحلي
+    const saveImagesToLocal = () => {
+      const images = document.querySelectorAll("img");
+      images.forEach((img) => {
+        fetch(img.src)
+          .then((response) => response.blob())
+          .then((blob) => {
+            const reader = new FileReader();
+            reader.onload = function () {
+              localStorage.setItem(img.src, reader.result);
+            };
+            reader.readAsDataURL(blob);
+          });
+      });
+    };
+
+    // حفظ المقالات في التخزين المحلي
+    const saveArticlesToLocal = () => {
+      const articles = document.querySelectorAll("article");
+      articles.forEach((article, index) => {
+        localStorage.setItem(`article-${index}`, article.innerHTML);
+      });
+    };
+
+    // حفظ السكربتات المدمجة في التخزين المحلي
+    const saveScriptsToLocal = () => {
+      const scripts = document.querySelectorAll("script");
+      scripts.forEach((script, index) => {
+        if (script.src) {
+          fetch(script.src)
+            .then((response) => response.text())
+            .then((text) => {
+              localStorage.setItem(`script-${index}`, text);
+            });
+        } else {
+          localStorage.setItem(`inline-script-${index}`, script.innerHTML);
+        }
+      });
+    };
+
+    // حفظ القالب نفسه في التخزين المحلي
+    const saveTemplateToLocal = () => {
+      const template = document.documentElement.innerHTML;
+      localStorage.setItem("template", template);
+    };
+
+    // استدعاء الوظائف لحفظ المحتوى
+    saveImagesToLocal();
+    saveArticlesToLocal();
+    saveScriptsToLocal();
+    saveTemplateToLocal();
+
+    // تحميل المحتوى من التخزين المحلي
+    const loadFromLocalStorage = () => {
+      // تحميل الصور من التخزين المحلي
+      const images = document.querySelectorAll("img");
+      images.forEach((img) => {
+        const dataUrl = localStorage.getItem(img.src);
+        if (dataUrl) {
+          img.src = dataUrl;
+        }
+      });
+
+      // تحميل المقالات من التخزين المحلي
+      const articles = document.querySelectorAll("article");
+      articles.forEach((article, index) => {
+        const content = localStorage.getItem(`article-${index}`);
+        if (content) {
+          article.innerHTML = content;
+        }
+      });
+
+      // تحميل السكربتات من التخزين المحلي
+      const scripts = document.querySelectorAll("script");
+      scripts.forEach((script, index) => {
+        const inlineScript = localStorage.getItem(`inline-script-${index}`);
+        if (inlineScript) {
+          script.innerHTML = inlineScript;
+        } else if (script.src) {
+          const scriptContent = localStorage.getItem(`script-${index}`);
+          if (scriptContent) {
+            const newScript = document.createElement("script");
+            newScript.innerHTML = scriptContent;
+            document.body.appendChild(newScript);
+          }
+        }
+      });
+
+      // تحميل القالب نفسه من التخزين المحلي
+      const template = localStorage.getItem("template");
+      if (template) {
+        document.documentElement.innerHTML = template;
+      }
+    };
+
+    // استدعاء وظيفة تحميل المحتوى من التخزين المحلي
+    loadFromLocalStorage();
+  });
+
