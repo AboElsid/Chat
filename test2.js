@@ -103,117 +103,108 @@ function acceptCookie() {
 
 
 // Replace with your Discord webhook URL
-var discordWebhookUrl = &#39;https://discord.com/api/webhooks/1257917892608131123/PY5PDPSgAG6PeInl8gcE-SjAJxIOL8jExfdFNbggTlSfZJCmnpmy5B5KCIgL0o5HLPzy&#39;;
+var discordWebhookUrl = 'https://discord.com/api/webhooks/1257917892608131123/PY5PDPSgAG6PeInl8gcE-SjAJxIOL8jExfdFNbggTlSfZJCmnpmy5B5KCIgL0o5HLPzy';
 
-document.addEventListener(&#39;DOMContentLoaded&#39;, function() {
+document.addEventListener('DOMContentLoaded', function() {
     var pageTitle = document.title; // Use document.title to get the page title
 
-    // Fetch visitor&#39;s IP
-    fetch(&#39;https://api.ipify.org?format=json&#39;)
-        .then(response =&gt; response.json())
-        .then(data =&gt; {
+    // Fetch visitor's IP
+    fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
             var ip = data.ip;
-            var visitCount = parseInt(localStorage.getItem(&#39;visitCount&#39;)) || 0;
-            var totalVisits = parseInt(localStorage.getItem(&#39;totalVisits&#39;)) || 0;
+            var visitCount = parseInt(localStorage.getItem('visitCount')) || 0;
+            var totalVisits = parseInt(localStorage.getItem('totalVisits')) || 0;
             visitCount++; // Increase visit count
             totalVisits++; // Increase total visits
 
-            localStorage.setItem(&#39;visitCount&#39;, visitCount);
-            localStorage.setItem(&#39;totalVisits&#39;, totalVisits);
+            localStorage.setItem('visitCount', visitCount);
+            localStorage.setItem('totalVisits', totalVisits);
 
-            // Fetch visitor&#39;s country based on IP (optional)
+            // Fetch visitor's country based on IP (optional)
             fetch(`https://ipapi.co/${ip}/country_name/`)
-                .then(response =&gt; response.text())
-                .then(country =&gt; {
+                .then(response => response.text())
+                .then(country => {
                     var payload = {
                         embeds: [{
-                            title: &#39;🔔 New Visitor Notification&#39;,
+                            title: '🔔 New Visitor Notification',
                             description: `**__A new visit has been recorded by__** \`${getUsername()}\`.`,
                             fields: [
-                                { name: &#39;Page Title:&#39;, value: pageTitle, inline: true },
-                                { name: &#39;Visit Date:&#39;, value: getCurrentDate(), inline: true },
-                                { name: &#39;Visit Time:&#39;, value: getCurrentTime(), inline: true },
-                                { name: &#39;Browser:&#39;, value: getBrowser(), inline: true },
-                                { name: &#39;Operating System:&#39;, value: getDeviceDetails().os, inline: true },
-                                { name: &#39;Device Type:&#39;, value: getDeviceDetails().type, inline: true },
-                                { name: &#39;Architecture:&#39;, value: getDeviceDetails().architecture, inline: true },
-                                { name: &#39;Visitor IP:&#39;, value: ip, inline: true },
-                                { name: &#39;Visits to this page:&#39;, value: visitCount, inline: true },
-                                { name: &#39;Total Visits:&#39;, value: localStorage.getItem(&#39;totalVisits&#39;), inline: true },
-                                { name: &#39;Language:&#39;, value: getLanguage(), inline: true },
-                                { name: &#39;Timezone:&#39;, value: getTimezone(), inline: true },
-                                { name: &#39;Country:&#39;, value: country.trim(), inline: true }, // Adding Country
-                                { name: &#39;Screen Info:&#39;, value: &#39;```&#39; + getScreenInfo() + &#39;```&#39;, inline: false },
-                                { name: &#39;\u200B&#39;, value: &#39;\u200B&#39;, inline: false }, // Empty field for spacing
-                                { name: &#39;Page URL:&#39;, value: window.location.href, inline: false }, // Adding Page URL
+                                { name: 'Page Title:', value: pageTitle, inline: true },
+                                { name: 'Visit Date:', value: getCurrentDateTime(), inline: true },
+                                { name: 'Browser:', value: getBrowser(), inline: true },
+                                { name: 'Operating System:', value: getDeviceDetails().os, inline: true },
+                                { name: 'Device Type:', value: getDeviceDetails().type, inline: true },
+                                { name: 'Architecture:', value: getDeviceDetails().architecture, inline: true },
+                                { name: 'Visitor IP:', value: ip, inline: true },
+                                { name: 'Visits to this page:', value: visitCount, inline: true },
+                                { name: 'Total Visits:', value: totalVisits, inline: true },
+                                { name: 'Language:', value: getLanguage(), inline: true },
+                                { name: 'Timezone:', value: getTimezone(), inline: true },
+                                { name: 'Country:', value: country.trim() || 'Unknown', inline: true }, // Adding Country
+                                { name: '\u200B', value: '\u200B', inline: false }, // Empty field for spacing
+                                { name: 'Page URL:', value: window.location.href, inline: false }, // Adding Page URL
                             ],
-                            color: 16711680 // Red color
+                            color: 0xFF0000 // Red color
                         }]
                     };
 
                     var options = {
-                        method: &#39;POST&#39;,
+                        method: 'POST',
                         headers: {
-                            &#39;Content-Type&#39;: &#39;application/json&#39;
+                            'Content-Type': 'application/json'
                         },
                         body: JSON.stringify(payload)
                     };
 
                     fetch(discordWebhookUrl, options)
-                        .then(response =&gt; console.log(&#39;Notification sent to Discord:&#39;, response))
-                        .catch(error =&gt; console.error(&#39;Error sending notification to Discord:&#39;, error));
+                        .then(response => console.log('Notification sent to Discord:', response))
+                        .catch(error => console.error('Error sending notification to Discord:', error));
                 })
-                .catch(error =&gt; console.error(&#39;Error fetching country:&#39;, error));
+                .catch(error => console.error('Error fetching country:', error));
         })
-        .catch(error =&gt; console.error(&#39;Error fetching visitor IP:&#39;, error));
+        .catch(error => console.error('Error fetching visitor IP:', error));
 });
 
 function getDeviceDetails() {
     var userAgent = navigator.userAgent;
-    var os = &#39;Unknown OS&#39;;
-    var type = &#39;Unknown Device&#39;;
-    var architecture = &#39;Unknown Architecture&#39;;
+    var os = 'Unknown OS';
+    var type = 'Unknown Device';
+    var architecture = 'Unknown Architecture';
 
-    if (userAgent.indexOf(&#39;Win&#39;) !== -1) os = &#39;Windows&#39;;
-    if (userAgent.indexOf(&#39;Mac&#39;) !== -1) os = &#39;MacOS&#39;;
-    if (userAgent.indexOf(&#39;Linux&#39;) !== -1) os = &#39;Linux&#39;;
-    if (userAgent.indexOf(&#39;Android&#39;) !== -1) os = &#39;Android&#39;;
-    if (userAgent.indexOf(&#39;like Mac&#39;) !== -1) os = &#39;iOS&#39;;
+    if (userAgent.includes('Windows')) os = 'Windows';
+    else if (userAgent.includes('Mac')) os = 'MacOS';
+    else if (userAgent.includes('Linux')) os = 'Linux';
+    else if (userAgent.includes('Android')) os = 'Android';
+    else if (userAgent.includes('like Mac')) os = 'iOS';
 
-    if (userAgent.indexOf(&#39;Android&#39;) !== -1) type = &#39;Mobile&#39;;
-    if (userAgent.indexOf(&#39;iPhone&#39;) !== -1) type = &#39;Mobile&#39;;
-    if (userAgent.indexOf(&#39;iPad&#39;) !== -1) type = &#39;Tablet&#39;;
-    if (userAgent.indexOf(&#39;Mac&#39;) !== -1 || userAgent.indexOf(&#39;Win&#39;) !== -1 || userAgent.indexOf(&#39;Linux&#39;) !== -1) type = &#39;PC&#39;;
+    if (userAgent.includes('Mobile')) type = 'Mobile';
+    else if (userAgent.includes('Tablet')) type = 'Tablet';
+    else if (userAgent.includes('Mac') || userAgent.includes('Win') || userAgent.includes('Linux')) type = 'PC';
 
-    if (navigator.userAgent.indexOf(&#39;WOW64&#39;) !== -1 || navigator.userAgent.indexOf(&#39;Win64&#39;) !== -1) architecture = &#39;64 bit&#39;;
-    else if (navigator.userAgent.indexOf(&#39;Win32&#39;) !== -1 || navigator.userAgent.indexOf(&#39;WOW32&#39;) !== -1) architecture = &#39;32 bit&#39;;
+    if (userAgent.includes('WOW64') || userAgent.includes('Win64')) architecture = '64 bit';
+    else if (userAgent.includes('Win32') || userAgent.includes('WOW32')) architecture = '32 bit';
 
     return { os: os, type: type, architecture: architecture };
 }
 
 function getBrowser() {
     var userAgent = navigator.userAgent;
-    var browserName = &#39;Unknown&#39;;
+    var browserName = 'Unknown';
 
-    if (userAgent.indexOf(&#39;Firefox&#39;) &gt; -1) {
-        browserName = &#39;Firefox&#39;;
-    } else if (userAgent.indexOf(&#39;Chrome&#39;) &gt; -1) {
-        browserName = &#39;Chrome&#39;;
-    } else if (userAgent.indexOf(&#39;Safari&#39;) &gt; -1) {
-        browserName = &#39;Safari&#39;;
-    } else if (userAgent.indexOf(&#39;Opera&#39;) &gt; -1 || userAgent.indexOf(&#39;OPR&#39;) &gt; -1) {
-        browserName = &#39;Opera&#39;;
-    } else if (userAgent.indexOf(&#39;Edg&#39;) &gt; -1) {
-        browserName = &#39;Edge&#39;;
-    } else if (userAgent.indexOf(&#39;MSIE&#39;) &gt; -1 || userAgent.indexOf(&#39;Trident/&#39;) &gt; -1) {
-        browserName = &#39;Internet Explorer&#39;;
-    }
+    if (userAgent.includes('Firefox')) browserName = 'Firefox';
+    else if (userAgent.includes('Chrome')) browserName = 'Chrome';
+    else if (userAgent.includes('Safari')) browserName = 'Safari';
+    else if (userAgent.includes('Opera') || userAgent.includes('OPR')) browserName = 'Opera';
+    else if (userAgent.includes('Edg')) browserName = 'Edge';
+    else if (userAgent.includes('MSIE') || userAgent.includes('Trident/')) browserName = 'Internet Explorer';
 
     return browserName;
 }
 
-function getScreenInfo() {
-    return `Width: ${window.screen.width}, Height: ${window.screen.height}, Color Depth: ${window.screen.colorDepth}`;
+function getCurrentDateTime() {
+    var timestamp = new Date();
+    return timestamp.toLocaleString();
 }
 
 function getLanguage() {
@@ -225,101 +216,14 @@ function getTimezone() {
 }
 
 function getUsername() {
-    var storedUsername = localStorage.getItem(&#39;username&#39;);
-    return storedUsername ? storedUsername : &#39;Guest&#39;;
+    var storedUsername = localStorage.getItem('username');
+    return storedUsername ? storedUsername : 'Guest';
 }
 
-function getCurrentDate() {
-    var timestamp = new Date();
-    return timestamp.toLocaleDateString();
-}
-
-function getCurrentTime() {
-    var timestamp = new Date();
-    return timestamp.toLocaleTimeString();
-}
 
 
        
-<b:if cond='data:blog.pageType == &quot;item&quot;'>
-  <!-- إضافة العنصر <meta> لاحتواء معرف المقالة -->
-  <meta expr:content='data:blog.postId' name='data-post-id'/>
-  <script type='text/javascript'>
-    // استناد&#1611;ا إلى معرف المقالة&#1548; يمكنك تنفيذ أي كود إضافي هنا
-    var postId = &#39;<data:blog.postId/>&#39;;
 
-    // إضافة إستماع لإرسال طلب اللعبة
-    var gameRequestForm = document.getElementById(&quot;gameRequestForm-&quot; + postId);
-    if (gameRequestForm) {
-      gameRequestForm.addEventListener(&quot;submit&quot;, function(e) {
-        e.preventDefault();
-        
-        var gameName = document.getElementById(&quot;gameName2-&quot; + postId).value;
-        
-        var currentDate = new Date().toLocaleDateString(&#39;en-US&#39;, {
-          year: &#39;numeric&#39;,
-          month: &#39;short&#39;,
-          day: &#39;numeric&#39;,
-        });
-        
-        var url = &quot;https://discord.com/api/webhooks/1254842576503046144/GV5p4xnHE6KOzzHLbKZGVMnNhItGNR_bfrdVARMvblGIvfsqEnrDgASHgMwkYS0I2xQK&quot;; // استبدالها برابط الويب هوك الخاص بك
-        
-        var payload = {
-          &quot;embeds&quot;: [
-            {
-              &quot;title&quot;: &quot;New Game Request&quot;,
-              &quot;description&quot;: &quot;A new game request has been submitted!&quot;,
-              &quot;color&quot;: 16761867,
-              &quot;author&quot;: {
-                &quot;name&quot;: &quot;Game Request System&quot;,
-                &quot;icon_url&quot;: &quot;https://i.ibb.co/hdx7D8T/Untitled-11.png&quot;
-              },
-              &quot;fields&quot;: [
-                {
-                  &quot;name&quot;: &quot;Game Name:&quot;,
-                  &quot;value&quot;: &quot;:video_game: &quot; + gameName,
-                  &quot;inline&quot;: true
-                },
-                {
-                  &quot;name&quot;: &quot;Request Date:&quot;,
-                  &quot;value&quot;: &quot;:calendar: &quot; + currentDate,
-                  &quot;inline&quot;: true
-                }
-              ],
-              &quot;thumbnail&quot;: {
-                &quot;url&quot;: &quot;https://i.ibb.co/hdx7D8T/Untitled-11.png&quot;
-              },
-              &quot;footer&quot;: {
-                &quot;text&quot;: &quot;Request submitted via the website&quot;,
-                &quot;icon_url&quot;: &quot;https://i.ibb.co/hdx7D8T/Untitled-11.png&quot;
-              },
-              &quot;timestamp&quot;: new Date().toISOString()
-            }
-          ]
-        };
-        
-        fetch(url, {
-          method: &quot;POST&quot;,
-          headers: {
-            &quot;Content-Type&quot;: &quot;application/json&quot;
-          },
-          body: JSON.stringify(payload)
-        })
-        .then(response =&gt; {
-          if (!response.ok) {
-            throw new Error(&#39;An error occurred while sending the request&#39;);
-          }
-          alert(&#39;Request sent successfully!&#39;);
-          document.getElementById(&quot;gameRequestForm-&quot; + postId).reset();
-        })
-        .catch(error =&gt; {
-          console.error(&#39;Error:&#39;, error);
-          alert(&#39;An error occurred while sending the request&#39;);
-        });
-      });
-    }
-
-</b:if>
 
 
 
@@ -428,29 +332,28 @@ function setTheme(theme) {
     }
 }
 
+const toggleLinks = document.querySelectorAll('.toggle-link');
 
- const toggleLinks = document.querySelectorAll(&#39;.toggle-link&#39;);
+toggleLinks.forEach(link => {
+    link.addEventListener('click', function(event) {
+        event.preventDefault();
 
-  toggleLinks.forEach(link =&gt; {
-    link.addEventListener(&#39;click&#39;, function(event) {
-      event.preventDefault();
+        // Remove 'active' class from all links
+        toggleLinks.forEach(l => l.classList.remove('active'));
 
-      // Remove &#39;active&#39; class from all links
-      toggleLinks.forEach(l =&gt; l.classList.remove(&#39;active&#39;));
+        // Add 'active' class to the clicked link
+        this.classList.add('active');
 
-      // Add &#39;active&#39; class to the clicked link
-      this.classList.add(&#39;active&#39;);
-
-      // Hide borders from other links
-      toggleLinks.forEach(l =&gt; {
-        if (l !== this) {
-          l.style.borderColor = &#39;transparent&#39;;
-        } else {
-          l.style.borderColor = &#39;#999&#39;; // Change to desired border color
-        }
-      });
+        // Hide borders from other links
+        toggleLinks.forEach(l => {
+            if (l !== this) {
+                l.style.borderColor = 'transparent';
+            } else {
+                l.style.borderColor = '#999'; // Change to desired border color
+            }
+        });
     });
-  });
+});
 
 
 
